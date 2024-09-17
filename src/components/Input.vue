@@ -28,6 +28,7 @@ const inputHandle = (e) => {
 
 .input__container label {
     font-size: 20px;
+    font-weight: bold
 }
 
 .input__container textarea {

@@ -3,9 +3,7 @@ import { ref, reactive } from "vue";
 import Input from "./Input.vue";
 
 
-/**
- * * data
-*/
+// data
 const language = ref([
     { lang: "Arabic (Egypt)", lang_key: "ar-eg" },
     { lang: "Arabic (Saudi Arabia)", lang_key: "ar-sa" },
@@ -121,9 +119,7 @@ const audio_formats = ref([
     { audio_format: "ulaw_44khz_stereo" }
 ])
 
-/**
- * * api connection when user clicks on a button from <Input/>
-*/
+// api connection when user clicks on a button from <Input/>
 const http = new XMLHttpRequest();
 const api_key = "7f7b330d0d2244b69c4b0ceb7035dc01";
 const onHandleClickInput = (received_input) => {
@@ -138,9 +134,7 @@ const onHandleClickInput = (received_input) => {
     setCookie(logs);
 }
 
-/**
- * * creating logs for adding to cookie
-*/
+// creating logs for adding to cookie
 const addLog = () => {
     const log = `${result.text} (язык - ${result.lang}, формат - ${result.audio_codeck}, битрейт - ${result.audio_format}, скорость - ${result.speed}`;
     const log_date = new Date();
@@ -150,9 +144,7 @@ const addLog = () => {
     });
 }
 
-/**
- * * cookie methods
-*/
+// cookie methods
 const setCookie = (logs, options = {}) => {
     options = {
         path: '/'
@@ -168,10 +160,8 @@ const getCookie = (name) => {
     return matches ? JSON.parse(matches[1]) : undefined;
 }
 
-/**
- * @result - reactive-object for api-requests
- * @logs - reactive-object, logs when updating the page
- */
+// @result - reactive-object for api-requests
+// @logs - reactive-object, logs when updating the page
 const result = reactive({
     text: "",
     audioUrl: "",
@@ -275,6 +265,11 @@ if (cookie_logs != undefined) {
     border-radius: 5px;
     padding: 10px;
 }
+.api__modifications-container select:hover,
+input[id="speed"]:hover {
+    transform: scale(1.03);
+    transition: all 0.1s ease;
+}
 
 audio {
     width: 100%;
@@ -287,12 +282,28 @@ audio {
     font-weight: bold;
 }
 
-label[for='title']{
+label[for='title'] {
     text-align: center;
 }
 
-.logs-size{
+.logs-size {
     max-height: 90vh;
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+.api__modifications-container select::-webkit-scrollbar,
+.logs-size::-webkit-scrollbar {
+    width: 10px;
+}
+.api__modifications-container select::-webkit-scrollbar,
+.logs-size::-webkit-scrollbar-track {
+    background-color: rgb(58, 58, 58);
+    border-radius: 5px;
+}
+.logs-size::-webkit-scrollbar-thumb {
+    background-color: rgb(0, 126, 215);;
+    border-radius: 5px;
+}
+.logs-size::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 125, 215, 0.7);
 }
 </style>
