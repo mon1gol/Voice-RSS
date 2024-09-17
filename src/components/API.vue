@@ -3,6 +3,9 @@ import { ref, reactive } from "vue";
 import Input from "./Input.vue";
 
 
+/**
+ * * data
+*/
 const language = ref([
     { lang: "Arabic (Egypt)", lang_key: "ar-eg" },
     { lang: "Arabic (Saudi Arabia)", lang_key: "ar-sa" },
@@ -118,23 +121,11 @@ const audio_formats = ref([
     { audio_format: "ulaw_44khz_stereo" }
 ])
 
-const result = reactive({
-    text: "",
-    audioUrl: "",
-    lang: "en-gb",
-    voice: "",
-    audio_codeck: "MP3",
-    audio_format: "8khz_8bit_mono",
-    speed: "0"
-})
-
-const logs = reactive([
-    {}
-])
-
+/**
+ * * api connection when user clicks on a button from <Input/>
+*/
 const http = new XMLHttpRequest();
 const api_key = "7f7b330d0d2244b69c4b0ceb7035dc01";
-
 const onHandleClickInput = (received_input) => {
     const url = `http://api.voicerss.org/?key=${api_key}&hl=${result.lang}&r=${result.speed}&c=${result.audio_codeck}&f=${result.audio_format}&src=${received_input}`;
     http.open("GET", url);
@@ -144,11 +135,63 @@ const onHandleClickInput = (received_input) => {
     }
     result.text = received_input;
     addLog();
+    setCookie(logs);
 }
 
+/**
+ * * creating logs for adding to cookie
+*/
 const addLog = () => {
     const log = `${result.text} (язык - ${result.lang}, формат - ${result.audio_codeck}, битрейт - ${result.audio_format}, скорость - ${result.speed}`;
-    logs.push({log: log});
+    const log_date = new Date();
+    logs.push({
+        log: log,
+        date: log_date.toString()
+    });
+}
+
+/**
+ * * cookie methods
+*/
+const setCookie = (logs, options = {}) => {
+    options = {
+        path: '/'
+    };
+
+    let updatedCookie = 'logs' + "=" + JSON.stringify(logs);
+    document.cookie = updatedCookie;
+}
+const getCookie = (name) => {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? JSON.parse(matches[1]) : undefined;
+}
+
+/**
+ * @result - reactive-object for api-requests
+ * @logs - reactive-object, logs when updating the page
+ */
+const result = reactive({
+    text: "",
+    audioUrl: "",
+    lang: "en-gb",
+    voice: "",
+    audio_codeck: "MP3",
+    audio_format: "8khz_8bit_mono",
+    speed: "0"
+})
+const logs = reactive(
+    []
+)
+const cookie_logs = getCookie('logs');
+if (cookie_logs != undefined) {
+    cookie_logs.map(item => {
+        logs.push({
+            log: item.log,
+            date: item.date
+        })
+    });
 }
 </script>
 
@@ -191,7 +234,7 @@ const addLog = () => {
         </div>
         <nav class="logs">
             <label for="">История</label>
-            <div v-for="log in logs">{{log.log}}</div>
+            <div v-for="log in logs">{{ log.log }} {{ ": " + log.date }}</div>
         </nav>
     </div>
 </template>
@@ -200,17 +243,17 @@ const addLog = () => {
 .position {
     display: flex;
     justify-content: space-between;
-  }
-  
-  .api {
+}
+
+.api {
     margin: 0 5%;
     display: flex;
     flex-direction: column;
     gap: 100px;
     flex-grow: 1;
-  }
-  
-  .api__modifications {
+}
+
+.api__modifications {
     width: 100%;
     height: 100%;
     display: grid;
@@ -218,27 +261,30 @@ const addLog = () => {
     grid-template-rows: 1fr;
     justify-items: end;
     gap: 50px;
-  }
-  
-  .api__modifications-container {
+}
+
+.api__modifications-container {
     display: flex;
     align-items: center;
     gap: 20px;
-  }
-  
-  .api__modifications-container select {
+}
+
+.api__modifications-container select {
     all: unset;
     background-color: rgb(58, 58, 58);
     border-radius: 5px;
     padding: 10px;
-  }
-  
-  audio {
+}
+
+audio {
     width: 100%;
     height: 250px;
-  }
-  
-  .logs {
+}
+
+.logs {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
     background-color: rgb(58, 58, 58);
     padding: 10px;
     border-radius: 5px;
@@ -246,11 +292,11 @@ const addLog = () => {
     max-height: 550px;
     overflow-y: auto;
     margin: 5% 5% 0 0;
-  }
-  
-  .logs label {
+}
+
+.logs label {
     position: relative;
     font-size: 20px;
     font-weight: bold;
-  }
+}
 </style>
