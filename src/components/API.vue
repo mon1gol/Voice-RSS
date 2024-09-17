@@ -198,8 +198,8 @@ if (cookie_logs != undefined) {
 <template>
     <div class="position">
         <div class="api">
-            <Input @handleClickInput="onHandleClickInput" />
             <div class="api__modifications">
+                <label for="title">Настройки</label>
                 <div class="api__modifications-container">
                     <label>Выбрать язык:</label>
                     <select v-model="result.lang" value="English (Great Britain)">
@@ -229,44 +229,44 @@ if (cookie_logs != undefined) {
                     <input id="speed" type="range" min="-10" max="10" step="1" :value="result.speed"
                         @input="(e) => { result.speed = e.target.value }" />
                 </div>
+                <audio controls :src="result.audioUrl"></audio>
             </div>
-            <audio controls :src="result.audioUrl"></audio>
+            <div class="api__modifications">
+                <Input @handleClickInput="onHandleClickInput" />
+            </div>
+            <div class="api__modifications logs-size">
+                <label for="title">История</label>
+                <div v-for="log in logs">{{ log.log }} {{ ": " + log.date }}</div>
+            </div>
         </div>
-        <nav class="logs">
-            <label for="">История</label>
-            <div v-for="log in logs">{{ log.log }} {{ ": " + log.date }}</div>
-        </nav>
     </div>
 </template>
 
 <style lang="css">
 .position {
-    display: flex;
-    justify-content: space-between;
+    margin-top: 50px;
 }
 
 .api {
-    margin: 0 5%;
     display: flex;
-    flex-direction: column;
-    gap: 100px;
-    flex-grow: 1;
+    flex-direction: row;
+    margin: 0 5%;
 }
 
 .api__modifications {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1fr;
-    justify-items: end;
-    gap: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 33%;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .api__modifications-container {
+    margin: 10px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
 }
 
 .api__modifications-container select {
@@ -281,22 +281,18 @@ audio {
     height: 250px;
 }
 
-.logs {
-    display: flex;
-    gap: 5px;
-    flex-direction: column;
-    background-color: rgb(58, 58, 58);
-    padding: 10px;
-    border-radius: 5px;
-    width: 25%;
-    max-height: 550px;
-    overflow-y: auto;
-    margin: 5% 5% 0 0;
-}
-
-.logs label {
+.api__modifications label[for='title'] {
     position: relative;
     font-size: 20px;
     font-weight: bold;
+}
+
+label[for='title']{
+    text-align: center;
+}
+
+.logs-size{
+    max-height: 90vh;
+    overflow-y: scroll;
 }
 </style>

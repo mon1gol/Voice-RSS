@@ -12,15 +12,15 @@ const inputHandle = (e) => {
 <template>
     <div class="input__container">
         <label for="">Текст</label>
-        <input @input="inputHandle" />
+        <textarea @input="inputHandle" />
         <button @click="$emit('handleClickInput', input)">Отправить</button>
     </div>
 </template>
 
 <style lang="css">
 .input__container {
-    margin-top: 5%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 20px;
@@ -30,11 +30,13 @@ const inputHandle = (e) => {
     font-size: 20px;
 }
 
-.input__container input {
+.input__container textarea {
     all: unset;
     background-color: rgb(58, 58, 58);
     padding: 10px;
     border-radius: 5px;
+    width: 100%;
+    height: 62vh;
 }
 
 .input__container button{
