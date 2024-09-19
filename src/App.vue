@@ -6,7 +6,7 @@ import "./assets/main.css"
 
 <template>
   <main>
-    <API />
+    <API/>
   </main>
 </template>
 
